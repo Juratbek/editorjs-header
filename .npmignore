@@ -1,4 +1,7 @@
 .idea/
 src/
+example/
+node_modules/
+.github/
 webpack.config.js
 yarn.lock
