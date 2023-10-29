@@ -1,9 +1,10 @@
 /**
  * Build styles
  */
-import './index.css';
+import { availableLevels } from "./constants";
+import "./index.css";
 
-import { IconH1, IconH2, IconH3, IconH4, IconH5, IconH6, IconHeading } from '@codexteam/icons';
+import { IconHeading, IconAlignCenter } from "@codexteam/icons";
 
 /**
  * @typedef {object} HeaderData
@@ -49,7 +50,7 @@ export default class Header {
      */
     this._CSS = {
       block: this.api.styles.block,
-      wrapper: 'ce-header',
+      wrapper: "ce-header",
     };
 
     /**
@@ -88,12 +89,13 @@ export default class Header {
   normalizeData(data) {
     const newData = {};
 
-    if (typeof data !== 'object') {
+    if (typeof data !== "object") {
       data = {};
     }
 
-    newData.text = data.text || '';
+    newData.text = data.text || "";
     newData.level = parseInt(data.level) || this.defaultLevel.number;
+    newData.alignment = data.alignment;
 
     return newData;
   }
@@ -114,24 +116,53 @@ export default class Header {
    * @returns {Array}
    */
   renderSettings() {
-    return this.levels.map(level => ({
+    const settings = this.levels.map((level) => ({
       icon: level.svg,
       label: this.api.i18n.t(`Heading ${level.number}`),
       onActivate: () => this.setLevel(level.number),
       closeOnActivate: true,
       isActive: this.currentLevel.number === level.number,
     }));
+
+    settings.push({
+      icon: IconAlignCenter,
+      label: this.api.i18n.t(`Align center`),
+      onActivate: () => this.toggleAlignment("center"),
+      closeOnActivate: true,
+      isActive: this._data.alignment === "center",
+    });
+
+    return settings;
   }
 
   /**
-   * Callback for Block's settings buttons
+   * Callback for Block's alignment settings buttons
+   *
+   * @param {number} alignment - text alignment to toggle
+   */
+  toggleAlignment(alignment) {
+    if (alignment === this._data.alignment) {
+      this.data = {
+        ...this.data,
+        alignment: undefined,
+      };
+    } else {
+      this.data = {
+        ...this.data,
+        alignment,
+      };
+    }
+  }
+
+  /**
+   * Callback for Block's level settings buttons
    *
    * @param {number} level - level to set
    */
   setLevel(level) {
     this.data = {
-      level: level,
-      text: this.data.text,
+      ...this.data,
+      level,
     };
   }
 
@@ -146,6 +177,7 @@ export default class Header {
     const newData = {
       text: this.data.text + data.text,
       level: this.data.level,
+      alignment: this.data.alignment,
     };
 
     this.data = newData;
@@ -160,7 +192,7 @@ export default class Header {
    * @public
    */
   validate(blockData) {
-    return blockData.text.trim() !== '';
+    return blockData.text.trim() !== "";
   }
 
   /**
@@ -174,6 +206,7 @@ export default class Header {
     return {
       text: toolsContent.innerHTML,
       level: this.currentLevel.number,
+      alignment: this.data.alignment,
     };
   }
 
@@ -182,8 +215,8 @@ export default class Header {
    */
   static get conversionConfig() {
     return {
-      export: 'text', // use 'text' property for other blocks
-      import: 'text', // fill 'text' property from other block's export string
+      export: "text", // use 'text' property for other blocks
+      import: "text", // fill 'text' property from other block's export string
     };
   }
 
@@ -265,7 +298,7 @@ export default class Header {
      * If data.text was passed then update block's content
      */
     if (data.text !== undefined) {
-      this._element.innerHTML = this._data.text || '';
+      this._element.innerHTML = this._data.text || "";
     }
   }
 
@@ -284,7 +317,7 @@ export default class Header {
     /**
      * Add text to block
      */
-    tag.innerHTML = this._data.text || '';
+    tag.innerHTML = this._data.text || "";
 
     /**
      * Add styles class
@@ -292,14 +325,19 @@ export default class Header {
     tag.classList.add(this._CSS.wrapper);
 
     /**
+     * Add alignment class
+     */
+    this._data.alignment && tag.classList.add(this._data.alignment);
+
+    /**
      * Make tag editable
      */
-    tag.contentEditable = this.readOnly ? 'false' : 'true';
+    tag.contentEditable = this.readOnly ? "false" : "true";
 
     /**
      * Add Placeholder
      */
-    tag.dataset.placeholder = this.api.i18n.t(this._settings.placeholder || '');
+    tag.dataset.placeholder = this.api.i18n.t(this._settings.placeholder || "");
 
     return tag;
   }
@@ -310,7 +348,9 @@ export default class Header {
    * @returns {level}
    */
   get currentLevel() {
-    let level = this.levels.find(levelItem => levelItem.number === this._data.level);
+    let level = this.levels.find(
+      (levelItem) => levelItem.number === this._data.level
+    );
 
     if (!level) {
       level = this.defaultLevel;
@@ -329,14 +369,16 @@ export default class Header {
      * User can specify own default level value
      */
     if (this._settings.defaultLevel) {
-      const userSpecified = this.levels.find(levelItem => {
+      const userSpecified = this.levels.find((levelItem) => {
         return levelItem.number === this._settings.defaultLevel;
       });
 
       if (userSpecified) {
         return userSpecified;
       } else {
-        console.warn('(ง\'̀-\'́)ง Heading Tool: the default level specified was not found in available levels');
+        console.warn(
+          "(ง'̀-'́)ง Heading Tool: the default level specified was not found in available levels"
+        );
       }
     }
 
@@ -361,42 +403,9 @@ export default class Header {
    * @returns {level[]}
    */
   get levels() {
-    const availableLevels = [
-      {
-        number: 1,
-        tag: 'H1',
-        svg: IconH1,
-      },
-      {
-        number: 2,
-        tag: 'H2',
-        svg: IconH2,
-      },
-      {
-        number: 3,
-        tag: 'H3',
-        svg: IconH3,
-      },
-      {
-        number: 4,
-        tag: 'H4',
-        svg: IconH4,
-      },
-      {
-        number: 5,
-        tag: 'H5',
-        svg: IconH5,
-      },
-      {
-        number: 6,
-        tag: 'H6',
-        svg: IconH6,
-      },
-    ];
-
-    return this._settings.levels ? availableLevels.filter(
-      l => this._settings.levels.includes(l.number)
-    ) : availableLevels;
+    return this._settings.levels
+      ? availableLevels.filter((l) => this._settings.levels.includes(l.number))
+      : availableLevels;
   }
 
   /**
@@ -415,22 +424,22 @@ export default class Header {
     let level = this.defaultLevel.number;
 
     switch (content.tagName) {
-      case 'H1':
+      case "H1":
         level = 1;
         break;
-      case 'H2':
+      case "H2":
         level = 2;
         break;
-      case 'H3':
+      case "H3":
         level = 3;
         break;
-      case 'H4':
+      case "H4":
         level = 4;
         break;
-      case 'H5':
+      case "H5":
         level = 5;
         break;
-      case 'H6':
+      case "H6":
         level = 6;
         break;
     }
@@ -438,7 +447,9 @@ export default class Header {
     if (this._settings.levels) {
       // Fallback to nearest level when specified not available
       level = this._settings.levels.reduce((prevLevel, currLevel) => {
-        return Math.abs(currLevel - level) < Math.abs(prevLevel - level) ? currLevel : prevLevel;
+        return Math.abs(currLevel - level) < Math.abs(prevLevel - level)
+          ? currLevel
+          : prevLevel;
       });
     }
 
@@ -456,7 +467,7 @@ export default class Header {
    */
   static get pasteConfig() {
     return {
-      tags: ['H1', 'H2', 'H3', 'H4', 'H5', 'H6'],
+      tags: ["H1", "H2", "H3", "H4", "H5", "H6"],
     };
   }
 
@@ -470,7 +481,7 @@ export default class Header {
   static get toolbox() {
     return {
       icon: IconHeading,
-      title: 'Heading',
+      title: "Heading",
     };
   }
 }
