@@ -1,56 +1,36 @@
-# Heading Tool
+# Heading Tool For EditorJs
 
-![Version of EditorJS that the plugin is compatible with](https://badgen.net/badge/Editor.js/v2.0/blue)
-
-Provides Headings Blocks for the [Editor.js](https://ifmo.su/editor).
+Provides Headings Blocks for the [Editor.js](https://editorjs.io).
 
 ## Installation
 
-### Install via NPM
+### Installation
 
-Get the package
+# npm
 
 ```shell
-npm i --save @editorjs/header
+npm i --save @juratbek/editorjs-header
 ```
 
-Include module at your application
+# yarn
 
-```javascript
-const Header = require('@editorjs/header');
-```
-
-### Download to your project's source dir
-
-1. Upload folder `dist` from repository
-2. Add `dist/bundle.js` file to your page.
-
-### Load from CDN
-
-You can load specific version of package from [jsDelivr CDN](https://www.jsdelivr.com/package/npm/@editorjs/header).
-
-`https://cdn.jsdelivr.net/npm/@editorjs/header@latest`
-
-Then require this script on page with Editor.js.
-
-```html
-<script src="..."></script>
+```shell
+npm i --save @juratbek/editorjs-header
 ```
 
 ## Usage
 
-Add a new Tool to the `tools` property of the Editor.js initial config.
+Add the Code tool to the `tools` property of the Editor.js initial config.
 
 ```javascript
-var editor = EditorJS({
-  ...
+import EditorJs from "@editorjs/editorjs";
+import Header from "@juratbek/editorjs-header";
 
+const editor = EditorJs({
+  // ...
   tools: {
-    ...
     header: Header,
   },
-
-  ...
 });
 ```
 

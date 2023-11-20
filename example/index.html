@@ -48,7 +48,10 @@
       readOnly: false,
       holder: "editorjs",
       tools: {
-        header: Header,
+        header: {
+          class: Header,
+          shortcut: "CMD+SHIFT+H",
+        },
         delimiter: Delimiter,
       },
       data: example_data, // Imported from example_data.js
