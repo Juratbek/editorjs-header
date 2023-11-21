@@ -64,6 +64,8 @@ All properties are optional.
 | levels       | `number[]` | enabled heading levels      |
 | defaultLevel | `number`   | default heading level       |
 
+#
+
 ```javascript
 var editor = EditorJS({
   ...
@@ -84,10 +86,6 @@ var editor = EditorJS({
 });
 ```
 
-## Tool's settings
-
-![An image showing the header block tool](https://capella.pics/634ad545-08d7-4cb7-8409-f01289e0e5e1.jpg)
-
 You can select one of six levels for heading.
 
 ## Output data
@@ -96,6 +94,8 @@ You can select one of six levels for heading.
 | ----- | -------- | ------------------------------------------------ |
 | text  | `string` | header's text                                    |
 | level | `number` | level of header: 1 for H1, 2 for H2 ... 6 for H6 |
+
+#
 
 ```json
 {
